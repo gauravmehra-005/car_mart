@@ -1,0 +1,96 @@
+package myproject.controller;
+
+import myproject.entity.Car;
+import myproject.repos.CarMartDao;
+import myproject.repos.CarMartDaoImpl;
+import myproject.utils.DbConnection;  
+import java.util.List;
+import java.util.Scanner;
+
+public class CarMartController {  
+    private CarMartDao carDao;
+    private Scanner scanner;
+
+    public CarMartController() {  
+        this.carDao = new CarMartDaoImpl(); 
+        this.scanner = new Scanner(System.in);
+    }
+
+    public void addCar() {
+        System.out.println("Enter Company Name: ");
+        String company = scanner.nextLine();
+
+        System.out.println("Enter Model Name: ");
+        String model = scanner.nextLine();
+
+        System.out.println("Enter Seater Capacity: ");
+        int seater = scanner.nextInt();
+        scanner.nextLine(); 
+
+        System.out.println("Enter Fuel Type (Petrol/Diesel/Electric): ");
+        String fuelType = scanner.nextLine();
+        
+        System.out.println("Enter Car Type (Sedan/Hatchback/SUV): ");
+        String carType = scanner.nextLine();
+
+        System.out.println("Enter Price: ");
+        int price = scanner.nextInt();
+
+        Car car = new Car(company, model, seater, fuelType, cartype, price, false);
+        carDao.addCar(car);
+
+    }
+
+    public void displayAllUnsoldCars() {
+        List<Car> cars = carDao.getAllUnsoldCars();
+        for (Car car : cars) {
+            System.out.println(car);
+        }
+    }
+
+    public void markCarAsSold() {
+        System.out.println("Enter Car ID to mark as SOLD: ");
+        int carId = scanner.nextInt();
+        carDao.markCarAsSold(carId);
+    }
+
+    public void updateCarPrice() {
+        System.out.println("Enter Car ID: ");
+        int carId = scanner.nextInt();
+
+        System.out.println("Enter new price: ");
+        int newPrice = scanner.nextInt();
+
+        carDao.updateCarPrice(carId, newPrice);
+        System.out.println("Price updated successfully.");
+    }
+
+    public void menu() {
+        while (true) {
+            System.out.println("\n1. Add Car");
+            System.out.println("2. Display Unsold Cars");
+            System.out.println("3. Mark Car as Sold");
+            System.out.println("4. Update Car Price");
+            System.out.println("5. Exit");
+            System.out.print("Enter choice: ");
+
+            int choice = scanner.nextInt();
+            scanner.nextLine(); 
+
+            switch (choice) {
+                case 1 -> addCar();
+                case 2 -> displayAllUnsoldCars();
+                case 3 -> markCarAsSold();
+                case 4 -> updateCarPrice();
+                case 5 -> {
+                    System.out.println("Closing database connection...");
+                    DbConnection.closeConnection(); 
+                    System.out.println("Exiting...");
+                    scanner.close();
+                    return;
+                }
+                default -> System.out.println("Invalid choice. Try again.");
+            }
+        }
+    }
+}

@@ -1,0 +1,5 @@
+package myproject.entity;
+
+public class Car {
+
+}
